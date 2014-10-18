@@ -6,19 +6,24 @@
 	<script src="/static/mootools_more.js"> </script>
 	<script src="/static/utils.js"> </script>
 	<script src="/static/controller.js"> </script>
+	<link href='http://fonts.googleapis.com/css?family=Teko' rel='stylesheet' type='text/css'>
 	<link rel="stylesheet" type="text/css" href="/static/controller.css"/>
     </head>
 
     <body>
 	<div class="login" id='login'>
-	<h1>login</h1>
+	<h1>JOIN THE GAME</h1>
 	<form id="connect"> 
-	<input type="text" id="username" placeholder="Username.." value="me"></input>
-	<button type="submit"> Join </button>
+	<input type="text" id="username" placeholder="Username"></input>
+	<button class="btn bottom" type="submit">JOIN</button>
 	</form>
-<!--
-<input type="file" capture="camera" accept="image/*" id="cameraInput" name="cameraInput">
--->
+
+
+   <div class="fileUpload btn btn-primary">
+    <span>Upload</span>
+    <input type="file" id="file_input" capture="camera" accept="image/*" id="cameraInput" name="cameraInput">
+</div> 
+
 	</div>
 
 	<div class="queue hidden" id="queue">
@@ -28,7 +33,7 @@
 	    </div>
 	</div>
 
-	<div class="controll hidden">
+	<div id="control" class="control hidden">
 <canvas id="canvas"  class="canvas">
   Your browser does not support canvas element.
 </canvas>

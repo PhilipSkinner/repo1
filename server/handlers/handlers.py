@@ -30,7 +30,14 @@ class SocketHandler(BaseSocketHandler):
         #identify our game window
         for sock in self.clients:
           if sock.isgame:
-            sock.write_message(json.dumps({ 'id' : message['identifier'], 'data' : message['data'] }))
+            sock.write_message(json.dumps({ 'id' : message['identifier'], 'data' : message['data'] }))                        
+        self.write_message(json.dumps({ 'meta' : { 'code' : '200' } }))
+      elif message['action'] == 'remove':
+        if 'toremove' in message:
+          for sock in self.clients:
+            if sock.identifier == message['toremove']:
+              sock.close()
+        
         self.write_message(json.dumps({ 'meta' : { 'code' : '200' } }))
         
     return  
@@ -63,7 +70,7 @@ class StatusHandler(BaseHandler):
     bq = db.BarQueue.objects(user=user, bar=bar).first()
     
     if bq == None:
-      self.jsonp({ 'meta' : { 'code' : '500', 'error' : 'You were kicked out of the queue for being ugly' }, 'data' : {} })
+      self.jsonp({ 'meta' : { 'code' : '200' }, 'data' : { 'status' : { 'position' : 0 } } })
       return
     
     self.jsonp({ 'meta' : { 'code' : '200' }, 'data' : { 'status' : bq.get_status() } })

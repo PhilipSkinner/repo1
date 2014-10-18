@@ -136,14 +136,22 @@ function checkStatus() {
         }, 
         onComplete: function (data) {
     	console.log(data);
-	if(data.meta.code != 200) {
-	    alert(data.meta.error);
+        	if(data.meta.code != 200) {
+        	    alert(data.meta.error);
+        	}
+                if(data.data.status.position == 0) {
+		$('queue').addClass('hidden');
+		$('control').removeClass('hidden');
+		document.body.style.backgroundImage="url('/static/NES_Controller_Phonebg.png')";
+		setTimeout(syncPosition, 100);
+        	    return;
+        	} else { 	
+        	    $('queue_number').innerHTML = data.data.status.position
+        	    setTimeout(checkStatus, 5000);
+        	}
 	}
-	$('queue_number').innerHTML = data.data.status.position
-        }
     }).send();
 
-    setTimeout(checkStatus, 5000);
 }
 
 //var url = "http://10.42.0.1:8034";
@@ -189,13 +197,13 @@ function openWS() {
 
 
 function syncPosition() {
-    console.log('sync');
+    console.log('sync position');
     if(ctrl) {
 	if(ctrl.vec.x != 0 || ctrl.vec.y != 0) {
 	    sendMessage(ctrl.vec.x, -1 * ctrl.vec.y); 
 	}
     }
-    setTimeout(syncPosition, 200);
+    setTimeout(syncPosition, 100);
 }
 
 window.addEvent('domready', function() {
@@ -226,7 +234,7 @@ window.addEvent('domready', function() {
 
     
   var el     = document.getElementsByTagName("canvas")[0];
-  el.width   = document.body.clientWidth;
+  el.width   = 324; //document.body.clientWidth;
   //el.width   = Math.min(324,document.body.clientWidth); 
   el.height  = 324; //document.body.clientHeight;
   console.log(el);
@@ -238,6 +246,5 @@ window.addEvent('domready', function() {
     sendMessage(vec.x,-vec.y);
   }
   ctrl.setup();
-  setTimeout(syncPosition, 100);
 console.log("initialized.");
 })

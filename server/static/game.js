@@ -12,13 +12,21 @@ function loadQR() {
 }
 
 function refreshScores() {  
-   $('#player1 .name').html(window.players[1].name);
-   $('#player1 .score')[0].className = 'score';
-   $('#player1 .score').addClass('score' + Math.floor(window.players[1].score/500));
+  if (window.players[1].identifier) {
+    $('#player1 .name').html(window.players[1].name);
+  } else {
+    $('#player1 .name').html("Player 1");  
+  }
+  $('#player1 .score')[0].className = 'score';
+  $('#player1 .score').addClass('score' + Math.floor(window.players[1].score/100));
 
-   $('#player2 .name').html(window.players[2].name);
-   $('#player2 .score')[0].className = 'score';
-   $('#player2 .score').addClass('score' + Math.floor(window.players[2].score/500));
+  if (window.players[2].identifier) {
+    $('#player2 .name').html(window.players[2].name);
+  } else {
+    $('#player2 .name').html("Player 2");   
+  }
+  $('#player2 .score')[0].className = 'score';
+  $('#player2 .score').addClass('score' + Math.floor(window.players[2].score/100));
 }
 
 function checkQueue() {
@@ -40,8 +48,6 @@ function checkQueue() {
           
           window.players[2].identifier = data.data.players[1].user.id;
           window.players[2].name = data.data.players[1].user.name;
-          
-          gameState = true;
         } else if (data.data.players.length == 1) {
           if (window.players[1].identifier == null) {
             window.players[1].identifier = data.data.players[0].user.id;
@@ -50,6 +56,10 @@ function checkQueue() {
             window.players[2].identifier = data.data.players[0].user.id;
             window.players[2].name = data.data.players[0].user.name;          
           }
+        }
+
+        if (window.players[1].identifier && window.players[2].identifier) {          
+          gameState = true;
         }
         
         refreshScores();
@@ -90,12 +100,13 @@ function connectionOpened(e) {
 function receiveMessage(e) {
   if (e && e.data) {
     var data = JSON.parse(e.data);
+    data.identifier = data.id;
     
     if (data && data.data) {
       if (data.data.x && data.data.y) {
         if (window.players[1].identifier == data.identifier) {      
           window.players[1].glass.nudge(data.data);
-        } else if (window.players[2].identifier == data.identifier || 1==1) {      
+        } else if (window.players[2].identifier == data.identifier) {      
           window.players[2].glass.nudge(data.data);        
         }
       }
@@ -148,7 +159,7 @@ function resetGame() {
 
   $('.beerglass').remove();
 
-  window.players[1].glass = glass({ x : 500, y : 340 }, { width : 100, height: 100 }, $('#game'), function() {});
+  window.players[1].glass = glass({ x : 600, y : 340 }, { width : 100, height: 100 }, $('#game'), function() {});
   window.players[2].glass = glass({ x : 900, y : 340 }, { width: 100, height: 100 }, $('#game'), function() {});
 
   if (gameState) {  
@@ -171,6 +182,8 @@ function checkCollisions(glass) {
   if (gameState != null) {  
     //did it fall off?
     if (!window.arena.validOpponent(window.players[1].glass)) {
+      ws.send(JSON.stringify({ 'action' : 'remove', 'toremove' : window.players[1].identifier }));
+    
       window.players[1].identifier = null;
       window.players[1].score = 0;
       window.players[2].score += 100;
@@ -180,6 +193,8 @@ function checkCollisions(glass) {
       return;
     }
     if (!window.arena.validOpponent(window.players[2].glass)) {
+      ws.send(JSON.stringify({ 'action' : 'remove', 'toremove' : window.players[2].identifier }));
+
       window.players[2].identifier = null;
       window.players[2].score = 0;
       window.players[1].score += 100;

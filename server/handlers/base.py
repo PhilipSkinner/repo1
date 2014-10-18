@@ -37,7 +37,6 @@ class BaseSocketHandler(tornado.websocket.WebSocketHandler):
   
   def open(self):
     self.clients.append(self)
-    self.write_message("Hello World")
       
   def on_close(self):
     self.clients.remove(self)
