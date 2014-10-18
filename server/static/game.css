@@ -1,0 +1,151 @@
+#mainwindow {
+	position: fixed;
+	top: 0px;
+	left: 0px;
+	right: 25%;
+	bottom: 0px;
+}
+
+#sidebar {
+	font-family: 'Ropa Sans', sans-serif;
+	position: fixed;
+	top: 0px;
+	left: 75%;
+	right: 0px;
+	bottom : 0px;
+	border-left: 2px solid rgba(0,0,0,0.8);
+}
+
+#topbar {
+	font-family: 'Ropa Sans', sans-serif;
+	background: #9B9B9B;
+	padding: 13px 15px;	
+	height: 124px;
+	line-height: 30px;	
+}
+
+#game {
+	position: absolute;
+	top: 150px;
+	left: 0px;
+	bottom: 0px;
+	right: 0px;
+	background: url('/static/floor.png') no-repeat top left;
+	background-size: cover;
+}
+
+#queue .header {
+	height: 40px;
+	line-height: 40px;	
+	padding: 5px 15px;
+	background: #000;
+}
+
+#qr {
+	text-align: center;
+	position: absolute;
+	bottom: 0px;
+	left: 0px;
+	right: 0px;
+	height: 200px;
+	border-top: 2px solid rgba(0,0,0,0.8);
+}
+
+#qr img {
+	max-height: 175px;
+}
+
+#queue .none, #queue .next {
+	display: none;
+}
+
+#queue.empty .none {
+	display: block;
+}
+
+#queue.full .next {
+	display: block;
+}
+
+#game .beerglass {
+	border-radius: 100%;
+	background: #FF0000;
+	position: absolute;
+	box-shadow: 1px 2px 6px rgba(0,0,0,0.6);
+	background: url('/static/beer2.png') no-repeat center center;
+	background-size: 100% 100%;
+}
+
+#game div:nth-of-type(2n) {
+	background: url('/static/beer1.png') no-repeat center center;
+	background-size: 100% 100%;
+}
+
+.table {
+	background: url('/static/table.png') no-repeat center center;
+	box-shadow: 0px 0px 25px rgba(0,0,0,0.9);
+}
+
+.player {
+	float: left;
+	color: #FFF;
+	font-size: 18px;
+	width: 50%;
+	box-sizing: border-box;
+	padding: 0px 50px;
+	text-align: center;
+}
+
+.player img {
+	float: right;
+	max-height: 120px;
+}
+
+.player .name {
+	font-size: 66px;
+	display: block;
+	font-weight: bold;
+}
+
+.player .score {
+	display: block;
+}
+
+.player .score span {
+	display: inline-block;
+	width: 25px;
+	height: 25px;
+	margin: 0px 3px;
+	background: url('/static/crown-off.png') no-repeat center center;
+	background-size: contain !important;
+}
+
+.player .score.score1 span:nth-of-type(1),
+.player .score.score2 span:nth-of-type(1),
+.player .score.score3 span:nth-of-type(1),
+.player .score.score4 span:nth-of-type(1),
+.player .score.score5 span:nth-of-type(1) {
+	background: url('/static/crown-on.png') no-repeat center center;	
+}
+
+.player .score.score2 span:nth-of-type(2),
+.player .score.score3 span:nth-of-type(2),
+.player .score.score4 span:nth-of-type(2),
+.player .score.score5 span:nth-of-type(2) {
+	background: url('/static/crown-on.png') no-repeat center center;	
+}
+
+.player .score.score3 span:nth-of-type(3),
+.player .score.score4 span:nth-of-type(3),
+.player .score.score5 span:nth-of-type(3) {
+	background: url('/static/crown-on.png') no-repeat center center;	
+}
+
+.player .score.score4 span:nth-of-type(4),
+.player .score.score5 span:nth-of-type(4) {
+	background: url('/static/crown-on.png') no-repeat center center;	
+}
+
+.player .score.score5 span:nth-of-type(5) {
+	background: url('/static/crown-on.png') no-repeat center center;	
+}

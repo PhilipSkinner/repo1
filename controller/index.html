@@ -1,0 +1,40 @@
+<html>
+    <head>
+<meta name="viewport" content="initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,width=device-width,user-scalable=no" />
+	<script src="/static/mootools.js"> </script>
+	<script src="/static/mootools_more.js"> </script>
+	<script src="/static/utils.js"> </script>
+	<script src="/static/controller.js"> </script>
+	<link rel="stylesheet" type="text/css" href="/static/controller.css"/>
+    </head>
+
+    <body>
+	<div class="login hidden" id='login'>
+	<h1>login</h1>
+	<form id="connect"> 
+	<input type="text" id="username" placeholder="Username.." value="me"></input>
+	<button type="submit"> Join </button>
+	</form>
+<!--
+<input type="file" capture="camera" accept="image/*" id="cameraInput" name="cameraInput">
+-->
+	</div>
+
+	<div class="queue hidden" id="queue">
+	    <div>
+		<h1> Your place in the queue: </h1>
+		<span id="queue_number"> </span>
+	    </div>
+	</div>
+
+	<div class="controll">
+<canvas id="canvas"  class="canvas">
+  Your browser does not support canvas element.
+</canvas>
+
+</div>
+
+
+
+    </body>
+</html>
