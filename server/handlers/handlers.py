@@ -121,18 +121,24 @@ class QueueHandler(BaseHandler):
     if bar == None:
       self.jsonp({ 'meta' : { 'code' : '500', 'error' : 'No such bar' }, 'data' : {} })
       return
+
+    players = []
+    queue = []
       
     raw = db.BarQueue.objects(bar=bar).order_by('position')
-    queue = [q.to_object() for q in raw]
-    players = []
+    if raw != None:
+      queue = [q.to_object() for q in raw]
     
-    required = self.get_argument('required', None)
-    if required != None:
-      num = int(required)      
-      while num > 0:
-        raw[int(required) - num].delete()
-        players.append(queue.pop(0))        
-        num -= 1
+      required = self.get_argument('required', None)
+      if required != None:
+        num = int(required)      
+        while num > 0:
+          try:
+            raw[int(required) - num].delete()
+            players.append(queue.pop(0))        
+          except:
+            pass
+          num -= 1
         
     self.jsonp({ 'meta' : { 'code' : '200' }, 'data' : { 'queue' : queue, 'players' : players } })            
     return

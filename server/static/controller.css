@@ -5,6 +5,10 @@ body {
     -moz-user-select: none;
     -ms-user-select: none;
     user-select: none;
+    background: url('/static/NES_Controller_Phonebg.png');
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-position: 0px -20px; 
 }
 
 .login { 
@@ -21,10 +25,13 @@ body {
 }
 
 .canvas {
-    height:100%;
     padding-left: 0;
     padding-right: 0;
     margin-left: auto;
     margin-right: auto;
     display: block;
+    margin-top: 183px;
+    position: relative;
+    left: -8px;
+
 }

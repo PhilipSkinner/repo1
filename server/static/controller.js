@@ -76,8 +76,8 @@ function Controller(canvas) {
         ctx.stroke();
 	if(this.image) {
 	    var r = this.image.height  / (1.0 * this.image.width);
-	    var w = Math.min(324, this.image.width);
-	    var h = w * r;
+	    var w = this.image.width; // Math.min(324, this.image.width);
+	    var h =  this.image.height; //w * r;
 	    console.log(w,h,r)
 	    ctx.drawImage(this.image,(this.canvas.width-w)/2,(this.canvas.height - this.image.height) / 2,w,h);
 	}
@@ -89,9 +89,6 @@ function Controller(canvas) {
 	this.vec = vec;
 	this.x   = vec.x * this.radius + cX
 	this.y   = vec.y * this.radius * -1 + cY
-	if(this.onMove) {
-	    this.onMove(vec)
-	}
     }    
  
     this.getRelativePosition = function(pX, pY) {
@@ -154,6 +151,7 @@ var url = "http://10.12.75.36:8034";
 var bar = getQueryVariable('bar');
 var guid = guid();
 var username = null;
+var ctrl    = null;
 if(!bar) {
     alert('No bar parameter, how did you get here? :(');
 }
@@ -188,8 +186,20 @@ function openWS() {
   ws.onopen = connectionOpened;
 }
 
+
+
+function syncPosition() {
+    console.log('sync');
+    if(ctrl) {
+	if(ctrl.vec.x != 0 || ctrl.vec.y != 0) {
+	    sendMessage(ctrl.vec.x, -1 * ctrl.vec.y); 
+	}
+    }
+    setTimeout(syncPosition, 200);
+}
+
 window.addEvent('domready', function() {
-  //  openWS()
+    openWS()
     $('connect').addEvent('submit', function(e) {
 	e.stop();
 	//e = new Event(e).stop();
@@ -218,14 +228,16 @@ window.addEvent('domready', function() {
   var el     = document.getElementsByTagName("canvas")[0];
   el.width   = document.body.clientWidth;
   //el.width   = Math.min(324,document.body.clientWidth); 
-  el.height  = document.body.clientHeight; 
-  var ctlr   = new Controller(el);
-  ctlr.image = new Image();
-  ctlr.image.src = '/static/Controller.png'
-  ctlr.onMove = function (vec) {
+  el.height  = 324; //document.body.clientHeight;
+  console.log(el);
+  ctrl   = new Controller(el);
+  ctrl.image = new Image();
+  ctrl.image.src = '/static/Controller.png'
+  ctrl.onMove = function (vec) {
     console.log('move')
-//	sendMessage(vec.x,-vec.y);
+    sendMessage(vec.x,-vec.y);
   }
-  ctlr.setup();
-  console.log("initialized.");
+  ctrl.setup();
+  setTimeout(syncPosition, 100);
+console.log("initialized.");
 })

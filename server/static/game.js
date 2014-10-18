@@ -1,5 +1,5 @@
 window.barID = '5442992688c76e31befda3c4';
-window.timeout = 10;
+window.timeout = 2;
 window.gameState = null;
 window.queueTimeout = null;
 
@@ -57,13 +57,19 @@ function checkQueue() {
     
       if (data.data.queue && data.data.queue.length > 0) {        
         $('#queue .next').html('');
-        for (var i = 0; i < data.data.queue.length; i++) {
+        for (var i = 0; i < data.data.queue.length && i < 5; i++) {
           var peep = data.data.queue[i];
         
-          var html = '<div class="queueMember"><span class="num">' + peep.position + '</span><b>' + peep.user.name + '</b></div>';
+          var num = Math.ceil(Math.random() * 7);        
+          var html = '<div class="queueMember"><img src="/static/profile' + num + '.png"><b>' + peep.user.name + '</b></div>';
         
           $('#queue .next').append(html);
         }
+        
+        if (data.data.queue.length > 5) {
+          $('#queue .next').append('<div class="queueMember more"><b>+' + (data.data.queue.length - 5) + ' more</b></div>');
+        }
+        
         $('#queue').removeClass('empty');
         $('#queue').addClass('full');
       } else {
@@ -89,7 +95,7 @@ function receiveMessage(e) {
       if (data.data.x && data.data.y) {
         if (window.players[1].identifier == data.identifier) {      
           window.players[1].glass.nudge(data.data);
-        } else {      
+        } else if (window.players[2].identifier == data.identifier || 1==1) {      
           window.players[2].glass.nudge(data.data);        
         }
       }
@@ -117,13 +123,13 @@ $(document).ready(function() {
       score : 0,
       identifier : null,
       name : 'Player 1',
-      glass : glass({ x : 500, y : 400 }, { width : 100, height: 100 }, $('#game'), function() {}),
+      glass : glass({ x : 600, y : 340 }, { width : 100, height: 100 }, $('#game'), function() {}),
     },
     '2' : { 
       score : 0,
       identifier : null,
       name : 'Player 2',
-      glass : glass({ x : 900, y : 400 }, { width: 100, height: 100 }, $('#game'), function() {}),
+      glass : glass({ x : 900, y : 340 }, { width: 100, height: 100 }, $('#game'), function() {}),
     }
   };
   
@@ -142,8 +148,8 @@ function resetGame() {
 
   $('.beerglass').remove();
 
-  window.players[1].glass = glass({ x : 500, y : 400 }, { width : 100, height: 100 }, $('#game'), function() {});
-  window.players[2].glass = glass({ x : 900, y : 400 }, { width: 100, height: 100 }, $('#game'), function() {});
+  window.players[1].glass = glass({ x : 500, y : 340 }, { width : 100, height: 100 }, $('#game'), function() {});
+  window.players[2].glass = glass({ x : 900, y : 340 }, { width: 100, height: 100 }, $('#game'), function() {});
 
   if (gameState) {  
     gameState = false;
@@ -285,8 +291,8 @@ var glass = function(position, size, element, callback) {
     },        
     
     nudge: function(vector) {
-      this.movement.x += vector.x;
-      this.movement.y += vector.y;
+      this.movement.x += (vector.x * 5);
+      this.movement.y += (vector.y * 5);
     },
     
     calculateCollision: function(glass) {
@@ -307,45 +313,45 @@ var glass = function(position, size, element, callback) {
       
       //which one is bigger?
       if (Math.abs(this.movement.x) + Math.abs(this.movement.y) > Math.abs(glass.movement.x) + Math.abs(glass.movement.y)) {
-        //centers offline?
+	//centers offline?
         var ourV = {};
         var theirV = {};
         
         if (thisCenter.x > theirCenter.x) {
-          ourV.x = (thisMovement.x + theirMovement.x) * 0.4;
-          theirV.x = (theirMovement.x + thisMovement.x) * 0.8;        
+          ourV.x = (thisMovement.x + theirMovement.x) * 0.8;
+          theirV.x = -(theirMovement.x + thisMovement.x) * 1.5;
         } else {
-          ourV.x = (thisMovement.x + theirMovement.x) * 0.4;
-          theirV.x = -(theirMovement.x + thisMovement.x) * 0.8;                
+          ourV.x = -(thisMovement.x + theirMovement.x) * 0.8;
+          theirV.x = (theirMovement.x + thisMovement.x) * 1.5;
         }
-        
+         
         if (thisCenter.y > theirCenter.y) {
-          ourV.y = (thisMovement.y + theirMovement.y) * 0.4;
-          theirV.y = (theirMovement.y + thisMovement.y) * 0.8;        
+          ourV.y = (thisMovement.y + theirMovement.y) * 0.8;
+          theirV.y = -(theirMovement.y + thisMovement.y) * 1.5;
         } else {
-          ourV.y = -(thisMovement.y + theirMovement.y) * 0.4;
-          theirV.y = (theirMovement.y + thisMovement.y) * 0.8;                
+          ourV.y = -(thisMovement.y + theirMovement.y) * 0.8;
+          theirV.y = (theirMovement.y + thisMovement.y) * 1.5;
         }
-        
+         
         ret.push(ourV);
-        ret.push(theirV);      
+        ret.push(theirV);
       } else {
         var ourV = {};
-        var theirV = {};      
+        var theirV = {};
         if (thisCenter.x > theirCenter.x) {
-          ourV.x = (thisMovement.x + theirMovement.x) * 0.8;        
-          theirV.x = (theirMovement.x + thisMovement.x) * 0.4;
+          ourV.x = (thisMovement.x + theirMovement.x) * 1.5;
+          theirV.x = -(theirMovement.x + thisMovement.x) * 0.8;
         } else {
-          ourV.x = (thisMovement.x + theirMovement.x) * 0.8;        
-          theirV.x = -(theirMovement.x + thisMovement.x) * 0.4;        
+          ourV.x = -(thisMovement.x + theirMovement.x) * 1.5;
+          theirV.x = (theirMovement.x + thisMovement.x) * 0.8;
         }
-        
+         
         if (thisCenter.y > theirCenter.y) {
-          ourV.y = (thisMovement.y + theirMovement.y) * 0.8;
-          theirV.y = (theirMovement.y + thisMovement.y) * 0.4;
+          ourV.y = -(thisMovement.y + theirMovement.y) * 1.5;
+          theirV.y = (theirMovement.y + thisMovement.y) * 0.8;
         } else {
-          ourV.y = (thisMovement.y + theirMovement.y) * 0.8;
-          theirV.y = -(theirMovement.y + thisMovement.y) * 0.4;        
+          ourV.y = (thisMovement.y + theirMovement.y) * 1.5;
+          theirV.y = -(theirMovement.y + thisMovement.y) * 0.8;
         }
 
         ret.push(ourV);
@@ -362,6 +368,31 @@ var glass = function(position, size, element, callback) {
       var distance = Math.sqrt(Math.pow((centerA.x - centerB.x), 2) + Math.pow((centerA.y - centerB.y), 2));
       
       if (distance - ((this.size.width / 2) + (glass.size.width / 2)) < 0) {
+	//now shift them so they dont
+	while (distance - ((this.size.width / 2) + (glass.size.width / 2)) < 0) {
+		centerA = this.getCenter();
+		centerB = glass.getCenter();
+		
+		if (centerA.x > centerB.x) {
+		  //shift it 1px
+		  this.position.x += 1;
+		  glass.position.x -= 1;
+		} else {
+		  this.position.x -= 1;
+		  glass.position.x += 1;
+		}
+		
+		if (centerA.y > centerB.x) {
+		  this.position.y += 1;
+		  glass.position.x -= 1;
+		} else {
+		  this.position.y -= 1;
+		  glass.position.x += 1;
+		}
+		
+	      	distance = Math.sqrt(Math.pow((centerA.x - centerB.x), 2) + Math.pow((centerA.y - centerB.y), 2));
+	}
+
         var vectors = this.calculateCollision(glass);
         
         this.movement = vectors[0];
