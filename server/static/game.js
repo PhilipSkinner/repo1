@@ -1,8 +1,9 @@
-window.barID = '5442992688c76e31befda3c4';
+window.barID = '544313fbe95e383e8f347004';
 window.timeout = 10;
 window.gameState = null;
 window.queueTimeout = null;
 window.numBeers = 15;
+window.disableMovement = true;
 
 function loadQR() {
   $.getJSON('/qr', function(data) {
@@ -16,20 +17,28 @@ function refreshScores() {
   $('#number').html(window.numBeers);
 
   if (window.players[1].identifier) {
-    $('#player1 .name').html(window.players[1].name);
+    if (window.players[1].name.length > 17) {
+	$('#player1 .name').html(window.players[1].name.substr(0, 17) + '...');
+    } else {
+	$('#player1 .name').html(window.players[1].name);	
+    }
     $('#player1 img').attr('src', '/static/users/' + window.players[1].identifier + '.png');
   } else {
-    $('#player1 .name').html("Player 1");  
+    $('#player1 .name').html("Waiting for player 1");  
     $('#player1 img').attr('src', '/static/profile-icon.png');
   }
   $('#player1 .score')[0].className = 'score';
   $('#player1 .score').addClass('score' + Math.floor(window.players[1].score/100));
 
   if (window.players[2].identifier) {
-    $('#player2 .name').html(window.players[2].name);
+    if (window.players[2].name.length > 17) {
+	    $('#player2 .name').html(window.players[2].name.substr(0, 17) + '...');
+    } else {
+	    $('#player2 .name').html(window.players[2].name);
+    }    
     $('#player2 img').attr('src', '/static/users/' + window.players[2].identifier + '.png');
   } else {
-    $('#player2 .name').html("Player 2");   
+    $('#player2 .name').html("Waiting for player 2");   
     $('#player2 img').attr('src', '/static/profile-icon.png');
   }
   $('#player2 .score')[0].className = 'score';
@@ -38,10 +47,11 @@ function refreshScores() {
 
 function checkQueue() {
   var url = '/queue?bar=' + this;
-  if (gameState == null) {
+
+  if (window.players[1].identifier == null && window.players[2].identifier == null) {
     //we need to fetch two players
     url += '&required=2';
-  } else if (gameState == false) {
+  } else if (window.players[1].identifier == null || window.players[2].identifier == null) {
     //we need to fetch the next player
     url += '&required=1';
   }
@@ -71,6 +81,15 @@ function checkQueue() {
         
         refreshScores();
       }
+
+      //do we have two players?
+      if (window.players[1].identifier && window.players[2].identifier) {
+	$('#waiting').removeClass('visible');
+      } else {
+	if (!$('#overlay').hasClass('visible')) {
+		$('#waiting').addClass('visible');
+	}
+      }
     
       if (data.data.queue && data.data.queue.length > 0) {        
         $('#queue .next').html('');
@@ -78,7 +97,11 @@ function checkQueue() {
           var peep = data.data.queue[i];
         
           var num = Math.ceil(Math.random() * 7);        
-          var html = '<div class="queueMember"><img src="/static/users/' + peep.user.id + '.png" onerror="this.src=\'/static/profile-icon.png\';"><b>' + peep.user.name + '</b></div>';
+	  var name = peep.user.name;
+	  if (name.length > 10) {
+		name = name.substr(0, 10) + '...';
+	  }
+          var html = '<div class="queueMember"><img src="/static/users/' + peep.user.id + '.png" onerror="this.src=\'/static/profile-icon.png\';"><b>' + name + '</b></div>';
         
           $('#queue .next').append(html);
         }
@@ -97,7 +120,7 @@ function checkQueue() {
   });
   
   clearTimeout(window.queueTimeout);
-  window.queueTimeout = setTimeout(checkQueue.bind(this), 5000);
+  window.queueTimeout = setTimeout(checkQueue.bind(this), 2000);
 }
   
 function connectionOpened(e) {   
@@ -105,16 +128,24 @@ function connectionOpened(e) {
 };
 
 function receiveMessage(e) {
-  if (e && e.data) {
-    var data = JSON.parse(e.data);
-    data.identifier = data.id;
+  if (window.players[1].identifier && window.players[2].identifier) {
+    window.disableMovement = false;
+  } else {
+    window.disableMovement = true;
+  }
+
+  if (!window.disableMovement) {
+    if (e && e.data) {
+      var data = JSON.parse(e.data);
+      data.identifier = data.id;
     
-    if (data && data.data) {
-      if (data.data.x && data.data.y) {
-        if (window.players[1].identifier == data.identifier) {      
-          window.players[1].glass.nudge(data.data);
-        } else if (window.players[2].identifier == data.identifier) {      
-          window.players[2].glass.nudge(data.data);        
+      if (data && data.data) {
+        if (data.data.x && data.data.y) {
+          if (window.players[1].identifier == data.identifier) {      
+            window.players[1].glass.nudge(data.data);
+          } else if (window.players[2].identifier == data.identifier) {      
+            window.players[2].glass.nudge(data.data);        
+          }
         }
       }
     }
@@ -122,7 +153,7 @@ function receiveMessage(e) {
 }
 
 function receiveInstructions() {
-  window.ws = new WebSocket("ws://10.12.75.36:8034/socket");
+  window.ws = new WebSocket("ws://fight.reorjs.com/socket");
  
   ws.onmessage = receiveMessage;
   ws.onclose = function(evt) { 
@@ -165,6 +196,8 @@ function resetGame() {
   window.numBeers -= 1;
   refreshScores();
 
+  //determine if we have won
+
   $('.beerglass').remove();
 
   window.players[1].glass = glass({ x : 600, y : 410 }, { width : 100, height: 100 }, $('#game'), function() {});
@@ -202,6 +235,12 @@ function checkCollisions(glass) {
       window.players[1].identifier = null;
       window.players[1].score = 0;
       window.players[2].score += 100;
+
+      if (window.players[2].score >= 500) {
+        ws.send(JSON.stringify({ 'action' : 'remove', 'toremove' : window.players[2].identifier, 'win' : 1 }));
+	window.players[2].score = 0;
+	window.players[2].identifier = null;
+      }
     
       resetGame();
       
@@ -220,6 +259,12 @@ function checkCollisions(glass) {
       window.players[2].identifier = null;
       window.players[2].score = 0;
       window.players[1].score += 100;
+
+      if (window.players[1].score >= 500) {
+        ws.send(JSON.stringify({ 'action' : 'remove', 'toremove' : window.players[1].identifier, 'win' : 1 }));
+	window.players[1].score = 0;
+	window.players[1].identifier = null;
+      }
     
       resetGame();
       

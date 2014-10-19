@@ -19,7 +19,7 @@
 #topbar {
 	font-family: 'Ropa Sans', sans-serif;
 	background: rgba(0,0,0,0.7);
-	padding: 13px 15px 13px 240px;	
+	padding: 13px 15px 13px 15px;	
 	height: 124px;
 	line-height: 60px;	
 }
@@ -104,7 +104,7 @@
 	float: left;
 	color: #FFF;
 	font-size: 18px;
-	width: 35%;
+	width: 42.5%;
 	box-sizing: border-box;
 	padding: 10px 0px 0px 0px;	
 	text-align: center;
@@ -145,7 +145,7 @@
 }
 
 .player .name {
-	font-size: 66px;
+	font-size: 60px;
 	display: block;
 	font-weight: bold;
 }
@@ -235,7 +235,7 @@ div.queueMember:nth-of-type(1) {
 	text-shadow: 0px 0px 3px rgba(0,0,0,1);
 }
 
-#overlay {
+#overlay, #waiting {
 	position: fixed;
 	top: 0px;
 	bottom: 0px;
@@ -247,11 +247,15 @@ div.queueMember:nth-of-type(1) {
 	-webkit-transition: opacity 0.3s;
 }
 
-#overlay.visible {
+#waiting {
+	background: transparent;
+}
+
+#overlay.visible, #waiting.visible {
 	opacity: 1;
 }
 
-#overlay .stripe {
+#overlay .stripe, #waiting .stripe {
 	position: absolute;
 	top: 50%;
 	height: 120px;

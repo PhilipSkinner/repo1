@@ -22,8 +22,11 @@ class IndexHandler(BaseHandler):
     return
 
 class SocketHandler(BaseSocketHandler):
-  def processMessage(self, message):      
-    if 'identifier' in message:
+  def processMessage(self, message):     
+    if 'id' in message:
+      message['identifier'] = message['id']
+
+    if 'identifier' in message and message['identifier'] != None and message['identifier'] != "None":
       self.identifier = message['identifier']
     
     if 'action' in message:
@@ -40,6 +43,8 @@ class SocketHandler(BaseSocketHandler):
         if 'toremove' in message:
           for sock in self.clients:
             if sock.identifier == message['toremove']:
+	      if 'win' in message:
+                sock.write_message(json.dumps({ 'meta' : { 'code' : '200' }, 'data' : { 'won' : 1 } }))
               sock.close()
         
         self.write_message(json.dumps({ 'meta' : { 'code' : '200' } }))
@@ -86,7 +91,7 @@ class RegisterHandler(BaseHandler):
     name = self.get_argument('name', None)    
     barId = self.get_argument('bar', None)
     image = self.get_argument('image', None)
-    
+
     if id == None:
       self.jsonp({ 'meta' : { 'code' : '500', 'error' : 'I need a user ID!' }, 'data' : {} })
       return
@@ -213,5 +218,5 @@ URLS = [
   ('/queue', QueueHandler),
   ('/game(.*)', GamePageHandler),
   ('/controller(.*)', ControllerPageHandler),
-  ('/static/(.*)', StaticFileHandler, {'path': '/home/philip/Development/repo1/server/static' })
+  ('/static/(.*)', StaticFileHandler, {'path': '/var/www/repo1/server/static' })
 ]

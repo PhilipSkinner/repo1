@@ -143,21 +143,22 @@ function checkStatus() {
 		$('queue').addClass('hidden');
 		$('control').removeClass('hidden');
 		document.body.style.backgroundImage="url('/static/NES_Controller_Phonebg.png')";
+		openWS();
+
 		setTimeout(syncPosition, 100);
         	    return;
         	} else { 	
         	    $('queue_number').innerHTML = data.data.status.position
-        	    setTimeout(checkStatus, 5000);
+        	    setTimeout(checkStatus, 500);
         	}
 	}
     }).send();
 
 }
 
-//var url = "http://10.42.0.1:8034";
-var url = "http://10.12.75.36:8034";
+var url = "http://fight.reorjs.com";
 var bar = getQueryVariable('bar');
-var guid = guid();
+var guid = gen_guid();
 var username = null;
 var ctrl    = null;
 if(!bar) {
@@ -166,12 +167,19 @@ if(!bar) {
 
 
 function receiveMessage(e) {
-	console.log(e);
+      console.log(e);
+      var data = JSON.parse(e.data);
+      if(data && data.data && data.data.won == 1) {
+	$('canvas').addClass('hidden');
+	$('control').addClass('hidden');
+	$('won').removeClass('hidden');
+	document.body.style.backgroundImage="";
+      }
 }
 
 function connectionOpened(e) {
 	console.log(e);
-	ws.send(JSON.stringify({ identifier : Math.ceil(Math.random() * 100000), action : 'command', data : { hello : 'world' } }));
+	sendMessage(0,0);
 }
 
 function sendMessage(x,y) {
@@ -185,14 +193,14 @@ function sendMessage(x,y) {
 }
 
 function openWS() {
-  window.ws = new WebSocket("ws://10.12.75.36:8034/socket");
+  window.ws = new WebSocket("ws://fight.reorjs.com/socket");
  
   ws.onmessage = receiveMessage;
   ws.onclose = function(evt) {
 	$('canvas').addClass('hidden');
 	$('login').removeClass('hidden');
 	document.body.style.backgroundImage="";
-	guid = guid();
+	guid = gen_guid();
   }; 
   ws.onopen = connectionOpened;
 }
@@ -230,8 +238,7 @@ window.addEvent('domready', function() {
 		console.log(data);
 		$('queue').removeClass('hidden');
 		$('login').addClass('hidden');
-		setTimeout(checkStatus, 1000);
-		openWS()
+		setTimeout(checkStatus, 500);
 	    }
 	}).send();
     })
@@ -275,6 +282,7 @@ fileloader.onabort = function() {
     console.log(canvas);
     console.log(canvas.toDataURL());
     profile_image = canvas.toDataURL();
+    canvas.dispose();
     $('upload').setStyle('background',"url('" + canvas.toDataURL() + "') no-repeat center center");
     $('upload').setStyle('background-size',"contain");
     $('upload').setStyle('border-radius',"50%");

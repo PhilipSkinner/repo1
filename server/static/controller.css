@@ -18,6 +18,12 @@ h1 {
   font-size: 35pt;
 }
 
+h2 {
+  font-family: 'Teko';
+  font-size: 30pt;
+  padding-bottom:0;
+  margin-bottom:0;
+}
 .btn {
   background-color: #4ec48f;
   font-family: 'Teko';
@@ -51,6 +57,23 @@ h1 {
 
 .queue {
     text-align: center;
+  font-family: 'Teko';
+  font-size: 35pt;
+}
+
+
+.won {
+    text-align: center;
+  font-family: 'Teko';
+  font-size: 35pt;
+}
+
+.won h1 {
+	margin-bottom: 0;
+}
+
+.won h2 {
+	margin-top: 0;
 }
 
 .hidden {
