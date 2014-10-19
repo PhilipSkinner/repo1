@@ -4,6 +4,9 @@ window.gameState = null;
 window.queueTimeout = null;
 window.numBeers = 15;
 window.disableMovement = true;
+window.startY = 410;
+window.startX = 600;
+window.startXX = 900;
 
 function loadQR() {
   $.getJSON('/qr', function(data) {
@@ -164,21 +167,31 @@ function receiveInstructions() {
 $(document).ready(function() {
   loadQR();
   //init the table
-  window.arena = table(800, 800, $('#game'));
-  
+
+  setTimeout(function() {
+  var width = $('body').width() / 2.8;
+
+  window.arena = table(width, width, $('#game'));  
+
+  window.startX = ($('#game').width() / 2) - (width / 3);
+  window.startXX = ($('#game').width() / 2) + (width / 5);
+
+  window.glassSize = ((1/1920) * $('body').width()) * 100;
+  window.startY = ($('#game').height() / 2) - (window.glassSize / 2);
+
   //initialize our glasses
   window.players = {
     '1' : {
       score : 0,
       identifier : null,
       name : 'Player 1',
-      glass : glass({ x : 600, y : 410 }, { width : 100, height: 100 }, $('#game'), function() {}),
+      glass : glass({ x : window.startX, y : startY }, { width : window.glassSize, height: window.glassSize }, $('#game'), function() {}),
     },
     '2' : { 
       score : 0,
       identifier : null,
       name : 'Player 2',
-      glass : glass({ x : 900, y : 410 }, { width: 100, height: 100 }, $('#game'), function() {}),
+      glass : glass({ x : window.startXX, y : startY }, { width: window.glassSize, height: window.glassSize }, $('#game'), function() {}),
     }
   };
   
@@ -190,6 +203,8 @@ $(document).ready(function() {
   refreshScores();
   checkQueue.bind(window.barID)();
   checkCollisions();  
+
+  }, 2000);
 });
 
 function resetGame() {
@@ -200,8 +215,8 @@ function resetGame() {
 
   $('.beerglass').remove();
 
-  window.players[1].glass = glass({ x : 600, y : 410 }, { width : 100, height: 100 }, $('#game'), function() {});
-  window.players[2].glass = glass({ x : 900, y : 410 }, { width: 100, height: 100 }, $('#game'), function() {});
+  window.players[1].glass = glass({ x : window.startX, y : startY }, { width : window.glassSize, height: window.glassSize }, $('#game'), function() {});
+  window.players[2].glass = glass({ x : window.startXX, y : startY }, { width: window.glassSize, height: window.glassSize }, $('#game'), function() {});
 
   if (gameState) {  
     gameState = false;

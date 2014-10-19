@@ -2,7 +2,7 @@
 	position: fixed;
 	top: 0px;
 	left: 0px;
-	right: 320px;
+	right: 20%;
 	bottom: 0px;
 }
 
@@ -10,7 +10,7 @@
 	font-family: 'Ropa Sans', sans-serif;
 	position: fixed;
 	top: 0px;
-	left: 1600px;
+	left: 80%;
 	right: 0px;
 	bottom : 0px;
 	background: #BBB;
@@ -47,7 +47,6 @@
 	bottom: 0px;
 	left: 0px;
 	right: 0px;
-	height: 355px;
 	color: #FFF;
 	font-size: 45px;
 	padding: 0px 0px 20px 0px;
@@ -55,6 +54,7 @@
 
 #qr img {
 	max-height: 280px;
+	max-width: 90%;
 }
 
 #qr span {
@@ -98,6 +98,7 @@
 .table {
 	background: url('/static/table.png') no-repeat center center;
 	box-shadow: 0px 0px 25px rgba(0,0,0,0.9);
+	background-size: 110%;
 }
 
 .player {
@@ -225,8 +226,8 @@ div.queueMember:nth-of-type(1) {
 
 #number {
 	position: absolute;
-	top: 370px;
-	left: 155px;
+	top: 42%;
+	left: 8%;
 	width: 100px;
 	text-align: center;
 	color: #FFF;
@@ -270,3 +271,64 @@ div.queueMember:nth-of-type(1) {
 	font-family: 'Ropa Sans', sans-serif;
 	color: #FFF;
 }
+
+@media screen and (max-width: 1240px) {
+	#number {
+		font-size: 60px;
+		line-height: 40px;
+	}
+
+	.player .name {
+		font-size: 30px;
+	}
+
+	.vs {
+		font-size: 60px;
+	}
+
+	#qr {
+		font-size: 35px;
+	}
+
+	.queueMember {
+		border-width: 5px !important;
+		font-size: 24px;
+	}
+
+	.stripe {
+		font-size: 60px !important;
+	}	
+}
+
+@media screen and (max-width: 1030px) {
+	#number {
+		font-size: 40px;
+		line-height: 20px;
+	}
+
+	.player .name {
+		font-size: 20px;
+	}
+
+	.vs {
+		font-size: 40px;
+	}
+
+	#qr {
+		font-size: 25px;
+	}
+
+	.queueMember {
+		border-width: 5px !important;
+		font-size: 18px;
+	}
+
+	.stripe {
+		font-size: 40px !important;
+	}	
+
+	#queue.empty .none {
+		padding-top: 100px;
+	}
+}
+
