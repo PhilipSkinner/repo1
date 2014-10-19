@@ -8,10 +8,17 @@
 		<link rel="stylesheet" href="/static/game.css" type="text/css" media="screen" />
 	</head>
 	<body>
+		<div id="overlay">
+			<div class="stripe">
+				Congratulations
+				<span class="name">Player 1</span>!				
+			</div>
+		</div>
+	
 		<div id="mainwindow">
 			<div id="topbar">
 				<div class="player" id="player1">
-					<img src="/static/profile1.png">
+					<img src="/static/profile-icon.png" onerror="this.src='/static/profile-icon.png';">
 					<b class="name">Player 1</b>
 					<span class="score">
 						<span></span>
@@ -25,7 +32,7 @@
 					vs.
 				</div>
 				<div class="player" id="player2">
-					<img src="/static/profile2.png">
+					<img src="/static/profile-icon.png" onerror="this.src='/static/profile-icon.png';">
 					<b class="name">Player 2</b>
 					<span class="score">
 						<span></span>
@@ -37,7 +44,7 @@
 				</div>
 			</div>
 			<div id="game">
-
+				<div id="number"></div>
 			</div>			
 		</div>
 		<div id="sidebar">

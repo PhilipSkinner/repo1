@@ -189,7 +189,10 @@ function openWS() {
  
   ws.onmessage = receiveMessage;
   ws.onclose = function(evt) {
-    alert("Connection close");
+	$('canvas').addClass('hidden');
+	$('login').removeClass('hidden');
+	document.body.style.backgroundImage="";
+	guid = guid();
   }; 
   ws.onopen = connectionOpened;
 }
@@ -207,7 +210,6 @@ function syncPosition() {
 }
 
 window.addEvent('domready', function() {
-    openWS()
     $('connect').addEvent('submit', function(e) {
 	e.stop();
 	//e = new Event(e).stop();
@@ -218,7 +220,8 @@ window.addEvent('domready', function() {
 	    data: {
 		id: guid,
 		name: username,
-		bar: bar
+		bar: bar,
+		image: profile_image
 	    },
 	    log: true,
 	    onRequest: function (url) {
@@ -228,11 +231,56 @@ window.addEvent('domready', function() {
 		$('queue').removeClass('hidden');
 		$('login').addClass('hidden');
 		setTimeout(checkStatus, 1000);
+		openWS()
 	    }
 	}).send();
     })
 
-    
+var profile_image = null; 
+
+$('file_input').addEvent('change', function(evt) {
+    console.log(evt);
+    var canvas = document.createElement('canvas');
+    var imageObj = new Image()
+    var ctx      = canvas.getContext('2d')
+    canvas.id = 'hidden_canvas'
+//    var w = 200;
+//    var h = 200;
+    var w = 100;
+    var h = 100;
+    canvas.width = w;
+    canvas.height = h;
+    canvas.style.visibility   = "hidden";   
+    document.body.appendChild(canvas);  
+    var fileloader = new FileReader();
+    var fileInput  = event.target.files[0];
+    fileloader.readAsDataURL(fileInput);
+
+    fileloader.onload = function() {
+        var data = this.result;	    
+	console.log(data);
+        imageObj.src = data;
+    }; 
+fileloader.onabort = function() {
+        alert("The upload was aborted.");
+    };
+
+    fileloader.onerror = function() {
+        alert("An error occured while reading the file.");
+    };  
+
+    imageObj.onload = function () {
+       ctx.clearRect(0,0,w,h);
+    ctx.drawImage(imageObj, 0, 0, this.width, this.height, 0, 0, w,h);
+    console.log(canvas);
+    console.log(canvas.toDataURL());
+    profile_image = canvas.toDataURL();
+    $('upload').setStyle('background',"url('" + canvas.toDataURL() + "') no-repeat center center");
+    $('upload').setStyle('background-size',"contain");
+    $('upload').setStyle('border-radius',"50%");
+    }
+})
+
   var el     = document.getElementsByTagName("canvas")[0];
   el.width   = 324; //document.body.clientWidth;
   //el.width   = Math.min(324,document.body.clientWidth); 

@@ -19,7 +19,7 @@ h1 {
 }
 
 .btn {
-    background-color: #4ec48f;
+  background-color: #4ec48f;
   font-family: 'Teko';
   color: #ffffff;
   font-size: 30px;
@@ -68,26 +68,31 @@ h1 {
 
 }
 
-#file_input {
+
+div.upload {
+    width: 150px;
+    height: 150px;
+    overflow: hidden;
     background-color: #4ec48f;
-  font-family: 'Teko';
-  color: #ffffff;
-  font-size: 30px;
-  padding: 10px 20px 10px 20px;
-  text-decoration: none;
-  width: 80%;
-  height:50px;
-  border: 0;
+    margin-left: auto;
+    margin-right: auto;
+    background: url('/static/Shutter_Button.png');
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    margin-bottom: 20px;
 }
 
-.fileUpload  input.upload {
-    position: absolute;
-    top: 0;
-    right: 0;
-    margin: 0;
-    padding: 0;
-    font-size: 20px;
-    cursor: pointer;
-    opacity: 0;
-    filter: alpha(opacity=0);
+div.upload input {
+    display: block !important;
+    width: 100% !important;
+    height: 100px !important;
+    opacity: 0 !important;
+    overflow: hidden !important;
+    
+}
+div.upload #hack {
+    background: url('/static/Shutter_Button.png');
+    position: relative;
+    top:0px;
+    left:0px;
 }

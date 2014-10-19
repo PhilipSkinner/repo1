@@ -1,7 +1,8 @@
 window.barID = '5442992688c76e31befda3c4';
-window.timeout = 2;
+window.timeout = 10;
 window.gameState = null;
 window.queueTimeout = null;
+window.numBeers = 15;
 
 function loadQR() {
   $.getJSON('/qr', function(data) {
@@ -12,18 +13,24 @@ function loadQR() {
 }
 
 function refreshScores() {  
+  $('#number').html(window.numBeers);
+
   if (window.players[1].identifier) {
     $('#player1 .name').html(window.players[1].name);
+    $('#player1 img').attr('src', '/static/users/' + window.players[1].identifier + '.png');
   } else {
     $('#player1 .name').html("Player 1");  
+    $('#player1 img').attr('src', '/static/profile-icon.png');
   }
   $('#player1 .score')[0].className = 'score';
   $('#player1 .score').addClass('score' + Math.floor(window.players[1].score/100));
 
   if (window.players[2].identifier) {
     $('#player2 .name').html(window.players[2].name);
+    $('#player2 img').attr('src', '/static/users/' + window.players[2].identifier + '.png');
   } else {
     $('#player2 .name').html("Player 2");   
+    $('#player2 img').attr('src', '/static/profile-icon.png');
   }
   $('#player2 .score')[0].className = 'score';
   $('#player2 .score').addClass('score' + Math.floor(window.players[2].score/100));
@@ -71,7 +78,7 @@ function checkQueue() {
           var peep = data.data.queue[i];
         
           var num = Math.ceil(Math.random() * 7);        
-          var html = '<div class="queueMember"><img src="/static/profile' + num + '.png"><b>' + peep.user.name + '</b></div>';
+          var html = '<div class="queueMember"><img src="/static/users/' + peep.user.id + '.png" onerror="this.src=\'/static/profile-icon.png\';"><b>' + peep.user.name + '</b></div>';
         
           $('#queue .next').append(html);
         }
@@ -126,7 +133,7 @@ function receiveInstructions() {
 $(document).ready(function() {
   loadQR();
   //init the table
-  window.arena = table(700, 700, $('#game'));
+  window.arena = table(800, 800, $('#game'));
   
   //initialize our glasses
   window.players = {
@@ -134,13 +141,13 @@ $(document).ready(function() {
       score : 0,
       identifier : null,
       name : 'Player 1',
-      glass : glass({ x : 600, y : 340 }, { width : 100, height: 100 }, $('#game'), function() {}),
+      glass : glass({ x : 600, y : 410 }, { width : 100, height: 100 }, $('#game'), function() {}),
     },
     '2' : { 
       score : 0,
       identifier : null,
       name : 'Player 2',
-      glass : glass({ x : 900, y : 340 }, { width: 100, height: 100 }, $('#game'), function() {}),
+      glass : glass({ x : 900, y : 410 }, { width: 100, height: 100 }, $('#game'), function() {}),
     }
   };
   
@@ -155,12 +162,13 @@ $(document).ready(function() {
 });
 
 function resetGame() {
+  window.numBeers -= 1;
   refreshScores();
 
   $('.beerglass').remove();
 
-  window.players[1].glass = glass({ x : 600, y : 340 }, { width : 100, height: 100 }, $('#game'), function() {});
-  window.players[2].glass = glass({ x : 900, y : 340 }, { width: 100, height: 100 }, $('#game'), function() {});
+  window.players[1].glass = glass({ x : 600, y : 410 }, { width : 100, height: 100 }, $('#game'), function() {});
+  window.players[2].glass = glass({ x : 900, y : 410 }, { width: 100, height: 100 }, $('#game'), function() {});
 
   if (gameState) {  
     gameState = false;
@@ -183,6 +191,13 @@ function checkCollisions(glass) {
     //did it fall off?
     if (!window.arena.validOpponent(window.players[1].glass)) {
       ws.send(JSON.stringify({ 'action' : 'remove', 'toremove' : window.players[1].identifier }));
+      
+      $('#overlay .name').html(window.players[2].name);
+      $('#overlay').addClass('visible');
+      
+      setTimeout(function() {
+        $('#overlay').removeClass('visible');
+      }, 5000);            
     
       window.players[1].identifier = null;
       window.players[1].score = 0;
@@ -195,6 +210,13 @@ function checkCollisions(glass) {
     if (!window.arena.validOpponent(window.players[2].glass)) {
       ws.send(JSON.stringify({ 'action' : 'remove', 'toremove' : window.players[2].identifier }));
 
+      $('#overlay .name').html(window.players[1].name);
+      $('#overlay').addClass('visible');
+      
+      setTimeout(function() {
+        $('#overlay').removeClass('visible');
+      }, 5000);            
+      
       window.players[2].identifier = null;
       window.players[2].score = 0;
       window.players[1].score += 100;

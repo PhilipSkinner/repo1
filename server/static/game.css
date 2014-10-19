@@ -13,12 +13,12 @@
 	left: 1600px;
 	right: 0px;
 	bottom : 0px;
-	background: #CCC;
+	background: #BBB;
 }
 
 #topbar {
 	font-family: 'Ropa Sans', sans-serif;
-	background: #9B9B9B;
+	background: rgba(0,0,0,0.7);
 	padding: 13px 15px 13px 240px;	
 	height: 124px;
 	line-height: 60px;	
@@ -90,7 +90,7 @@
 	background-size: 100% 100%;
 }
 
-#game div:nth-of-type(2n) {
+#game div:nth-of-type(3n) {
 	background: url('/static/beer1.png') no-repeat center center;
 	background-size: 100% 100%;
 }
@@ -112,16 +112,18 @@
 
 #player1 img {
 	float: right;
-	max-height: 110px;
-	padding-left: 25px;
+	height: 110px;
+	margin-left: 25px;
 	margin-top: -5px;
+	border-radius: 50%;
 }
 
 #player2 img {
 	float: left;
-	max-height: 110px;
-	padding-right: 25px;
+	height: 110px;
+	margin-right: 25px;
 	margin-top: -5px;
+	border-radius: 50%;
 }
 
 #player1 b, #player1 span {
@@ -207,7 +209,8 @@
 .queueMember img {
 	float: left;
 	max-height: 36px;
-	padding-right: 10px;
+	margin-right: 10px;
+	border-radius: 50%;
 }
 
 div.queueMember:nth-of-type(1) {
@@ -218,4 +221,48 @@ div.queueMember:nth-of-type(1) {
 	padding: 0px 26px;
 	overflow: hidden;
 	height: 500px;
+}
+
+#number {
+	position: absolute;
+	top: 370px;
+	left: 155px;
+	width: 100px;
+	text-align: center;
+	color: #FFF;
+	font-weight: bold;
+	font-size: 80px;
+	text-shadow: 0px 0px 3px rgba(0,0,0,1);
+}
+
+#overlay {
+	position: fixed;
+	top: 0px;
+	bottom: 0px;
+	left: 0px;
+	right: 0px;
+	z-index: 10;
+	background: rgba(0,0,0,0.4);
+	opacity: 0;
+	-webkit-transition: opacity 0.3s;
+}
+
+#overlay.visible {
+	opacity: 1;
+}
+
+#overlay .stripe {
+	position: absolute;
+	top: 50%;
+	height: 120px;
+	margin-top: -60px;
+	left: 0px;
+	right: 0px;
+	text-align: center;
+	font-size: 80px;
+	line-height: 120px;
+	font-weight: bold;
+	background: rgba(0,0,0,0.6);
+	font-family: 'Ropa Sans', sans-serif;
+	color: #FFF;
 }

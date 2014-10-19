@@ -11,6 +11,10 @@ import re
 from base import *
 
 import time
+import base64
+from PIL import Image as IM
+import cStringIO
+import urllib
 
 class IndexHandler(BaseHandler):
   def get(self):
@@ -81,6 +85,7 @@ class RegisterHandler(BaseHandler):
     id = self.get_argument('id', None)
     name = self.get_argument('name', None)    
     barId = self.get_argument('bar', None)
+    image = self.get_argument('image', None)
     
     if id == None:
       self.jsonp({ 'meta' : { 'code' : '500', 'error' : 'I need a user ID!' }, 'data' : {} })
@@ -102,6 +107,14 @@ class RegisterHandler(BaseHandler):
     
     user = db.User(uniqueID = id, name=name)
     user.save()
+    
+    if image:
+	content = urllib.unquote(image)
+	img = base64.b64decode(content.split(',')[1])
+
+	f = open('static/users/%s.png' % user.uniqueID, 'w')
+	f.write(img)
+	f.close()
     
     #get the largest position and add one :) tee hee
     latest = db.BarQueue.objects(bar=bar).order_by('-position').first()
